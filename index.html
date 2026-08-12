@@ -258,6 +258,35 @@ footer b{color:#eef4f8;font-family:"Noto Serif TC",serif}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
 .reveal.in{opacity:1;transform:none}
 </style>
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-734Z5BQTTE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-734Z5BQTTE');
+</script>
+<script>
+  // 自訂追蹤：點擊行為 + 各區塊瀏覽與停留秒數
+  window.addEventListener('DOMContentLoaded', function(){
+    if (typeof gtag !== 'function') return;
+    // 點擊：記錄點到的連結／按鈕文字與網址
+    document.addEventListener('click', function(e){
+      var el = e.target.closest('a, button'); if(!el) return;
+      var label = (el.getAttribute('aria-label') || el.textContent || '').trim().replace(/\s+/g,' ').slice(0,80);
+      gtag('event','click_element',{ link_text: label, link_url: el.getAttribute('href')||'', element_id: el.id||'' });
+    }, true);
+    // 區塊：進入畫面送 view_section，離開時送 section_dwell（停留秒數）
+    var names = {about:'首頁/關於', resume:'履歷', strengths:'核心能力', cases:'代表案例', why:'為什麼是我', contact:'聯絡'};
+    var enter = {};
+    var io = new IntersectionObserver(function(es){ es.forEach(function(en){
+      var id = en.target.id, name = names[id] || id;
+      if (en.isIntersecting){ enter[id] = Date.now(); gtag('event','view_section',{ section_id:id, section_name:name }); }
+      else if (enter[id]){ var s = Math.round((Date.now()-enter[id])/1000); enter[id]=0; if(s>0) gtag('event','section_dwell',{ section_id:id, section_name:name, seconds:s }); }
+    }); }, { threshold: 0.5 });
+    Object.keys(names).forEach(function(id){ var el = document.getElementById(id); if(el) io.observe(el); });
+  });
+</script>
 </head>
 <body>
 
